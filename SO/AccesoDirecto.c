@@ -5,6 +5,7 @@
 # include <string.h>
 # include <unistd.h>
 
+// Estructura para definir los datos de la persona
 struct Persona{
     char nombre[50];
     char apellido[50];
@@ -20,6 +21,8 @@ struct Persona{
     char web[50];
 };
 
+/*Esta función imprime una cuenta regresiva en la pantalla. 
+El valor del parámetro 'valor' determina el mensajes de cuenta regresiva ("Buscando ..." o "Cargando ...") según el valor proporcionado.*/
 void cuentaRegresiva(int valor){
     if(valor == 1){
         for(int i = 3; i > 0; i --){
@@ -37,7 +40,9 @@ void cuentaRegresiva(int valor){
         printf("\n");
     }
 }
-
+/*Esta función abre un archivo en el modo especificado. 
+El parámetro nombreArchivo especifica el nombre del archivo. 
+El parámetro modo especifica el modo en el que se abrirá el archivo.*/
 FILE *abrirArchivo(const char *nombreArchivo, const char *modo){
     FILE *archivo = fopen(nombreArchivo, modo);
 
@@ -47,23 +52,29 @@ FILE *abrirArchivo(const char *nombreArchivo, const char *modo){
     }
     return archivo;
 }
-
+//Función para cerrar el archivo//
 void cerrarArchivo(FILE *archivo){
     fclose(archivo);
 }
+/*Esta función agrega una persona al archivo. 
+El parámetro archivo especifica el archivo al que se agregará la persona. 
+El parámetro persona especifica la persona que se agregará.*/
 
 void agregarPersona(FILE *archivo, struct Persona *persona){
     fwrite(persona, sizeof(struct Persona), 1, archivo);
 }
-
+/*Busca en el archivo una persona con el email proporcionado e imprime si se encuentra o no.*/
 void buscarPorEmail(FILE *archivo, const char *email){
     struct Persona persona;
-
+/*abre el archivo en modo lectura*/
     fseek(archivo, 0, SEEK_SET);
 
     printf("\n");
     printf("Buscando por el siguiente email: %s\n\n", persona.email);
     cuentaRegresiva(1);
+    /*Itera sobre el archivo, leyendo una persona a la vez.
+    Compara la dirección de correo electrónico de la persona actual con la dirección de correo electrónico que se está buscando.
+    Si las direcciones de correo electrónico coinciden, la función imprime información sobre la persona.*/
     while(fread(&persona, sizeof(struct Persona), 1, archivo) == 1){
         if(strcmp(persona.email, email) == 0){
             printf("Persona con email '%s' SI se encontro.\n", persona.email);
@@ -79,6 +90,7 @@ void buscarPorEmail(FILE *archivo, const char *email){
     printf("-----------------------------\n");
 }
 
+/*Modifica un registro en el archivo según el campo especificado (nombre, apellido, empresa, etc.) y un nuevo valor.*/
 
 void modificarRegistroPersona(FILE *archivo, const char *email, int campo, const char *nuevoValor) {
     struct Persona persona;
